@@ -1,0 +1,92 @@
+{% extends "user/userlayout.html" %}
+{% block content %}
+
+<section class="hero-wrap position-relative" style="background-image: url(../../static/user/images/hillstation.jpg); background-size: cover; background-position: center; height: 75vh; padding-bottom: 80px;">
+  <!-- Overlay with transparency -->
+  <div class="overlay" style="background-color: rgba(0, 0, 0, 0.4); position: absolute; top: 0; left: 0; right: 0; bottom: 0;"></div>
+
+  <div class="container" style="height: 100%;">
+    <div class="row no-gutters slider-text align-items-end justify-content-center" style="height: 100%;">
+      <div class="col-md-9 ftco-animate pb-5 text-center" style="position: relative; z-index: 2;">
+         <p class="breadcrumbs" style="color: white;">
+            <span class="mr-2"><a href="{{url_for('userdashboard')}}" style="color: white;">Home <i class="fa fa-chevron-right"></i></a></span> 
+            <span>Tour Packages <i class="fa fa-chevron-right"></i></span>
+         </p>
+         <h1 class="mb-0 bread" style="color: white;">Tour Packages</h1>
+      </div>
+    </div>
+  </div>
+</section>
+{#<section class="hero-wrap hero-wrap-2 js-fullheight" style="background-image: url(../../static/user/images/hillstation.jpg);">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row no-gutters slider-text js-fullheight align-items-end justify-content-center">
+      <div class="col-md-9 ftco-animate pb-5 text-center">
+        <p class="breadcrumbs">
+          <span class="mr-2">
+            <a href="{{ url_for('userdashboard') }}">Home <i class="fa fa-chevron-right"></i></a>
+          </span> 
+          <span>Tour Packages <i class="fa fa-chevron-right"></i></span>
+        </p>
+        <h1 class="mb-0 bread">Tour Packages</h1>
+      </div>
+    </div>
+  </div>
+</section>#}
+
+<section class="ftco-section">
+   <div class="container">
+
+      <!-- 🔽 Heading Added Here -->
+    <div class="row justify-content-center pb-4">
+      <div class="col-md-12 heading-section text-center ftco-animate">
+        <span class="subheading" style="font-family: Arial, Helvetica, sans-serif;">Discover Our Offers</span>
+        <h2 class="mb-4">Top Holiday Tour Packages</h2>
+      </div>
+    </div>
+
+    <div class="row">
+
+      {% if userpackage %}  
+        {% for i in userpackage %}
+            
+       <div class="col-md-4 ftco-animate">
+          <div class="project-wrap">
+             <a href="{{ url_for ('packagedetails',id=i[0])}}" class="img" style="background-image: url(../../{{ i[5] }});">
+                <span class="price"><span>&#8377;</span>{{ i[4] }}</span>
+            </a>
+            <div class="text p-4">
+                <span class="days">{{ i[3] }} Days</span>
+                <h3><a href="#">{{ i[1] }}</a></h3>
+                <p class="location"><span class="fa fa-map-marker"></span>{{ i[2] }}</p>
+                
+           </div>
+       </div>
+   </div>
+   {% endfor %}
+   {% else %}
+
+     <div class="col-md-12 text-center">
+            <h3>No tour packages found for this location.</h3>
+        </div>
+    {% endif %}
+</section>
+
+<section class="ftco-intro ftco-section ftco-no-pt">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-12 text-center">
+        <div class="img" style="background-image: url(static/user/images/bg_2.jpg);">
+          <div class="overlay"></div>
+          <h2>Book your Customer Tour With Us</h2>
+          <!--p>We can manage your dream building. A small river named Duden flows by their place.</!--p-->
+          <p class="mb-0">
+            <a href="#" class="btn btn-primary px-4 py-3">Book Now</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends "admin/adminlayout.html" %}
+{% block content %}
+
+<!-- Start: Content -->
+<div id="content">
+    <div class="panel box-shadow-none content-header">
+        <div class="panel-body">
+            <div class="col-md-12">
+                <h3 class="animated fadeInLeft">Admin Profile</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-element">
+        <div class="col-md-12 padding-0">
+            <div class="col-md-12 panel">
+                <div class="col-md-12 panel-heading">
+                    <h4>Update Profile</h4>
+                </div>
+                <div class="col-md-12 panel-body" style="padding-bottom:30px;">
+                    <form class="cmxform" action="{{ url_for('adminupdateprofile') }}" id="profileForm" method="POST">
+
+                        <!-- Email (Read-only) -->
+                        <div class="form-group form-animate-text" style="margin-top:40px;">
+                            <input type="email" class="form-text custom-input" id="email" name="email" value="{{ admin[1] }}" readonly>
+                            <span class="bar"></span>
+                            <label>Email</label>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="form-group form-animate-text" style="margin-top:40px;">
+                            <input type="password" class="form-text custom-input" id="password" name="password" value="{{ admin[2] }}">
+                            <span class="bar"></span>
+                            <label>Password</label>
+                            <div class="error-message" id="password-error" style="color: red; font-size: 16px; margin-top: 5px;"></div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="form-group" style="margin-top:30px;">
+                            <input type="submit" class="btn btn-info" value="Submit">
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End: Content -->
+
+<script>
+    document.getElementById('profileForm').addEventListener('submit', async function(e){
+        e.preventDefault();
+
+        const password = document.getElementById('password');
+        document.getElementById('password-error').textContent = '';
+  
+        if(password.value.trim() === '')
+        {
+            document.getElementById('password-error').textContent = 'Password is required!';
+            password.focus();
+            return;
+        }
+
+        else if(password.value.length < 6)
+        {
+            document.getElementById('password-error').textContent = 'Password must be at least 6 characters';
+            password.focus();
+            return;
+        }
+        this.submit();
+    });
+</script>
+
+{% endblock %}

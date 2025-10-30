@@ -1,0 +1,498 @@
+{% extends "user/userlayout.html" %}
+{% block content %}
+
+<section class="hero-wrap hero-wrap-2 js-fullheight" style="background-image: url(../../{{ i[5] }});">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row no-gutters slider-text js-fullheight align-items-end justify-content-center">
+      <div class="col-md-9 ftco-animate pb-5 text-center">
+        <p class="breadcrumbs">
+          <span class="mr-2">
+            <a href="{{ url_for('userdashboard') }}">Home <i class="fa fa-chevron-right"></i></a>
+          </span>
+          <span>Package Details <i class="fa fa-chevron-right"></i></span>
+        </p>
+        <h1 class="mb-0 bread">{{ i[2] }}</h1>
+        <p style="color: red; font-weight: bold;">Package Type: {{ package_type }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ftco-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 ftco-animate">
+        <div class="project-wrap">
+          <div class="text p-5">
+            <span class="days" style="font-size: 20px; color: black; text-transform: capitalize;">
+              Duration: {{ i[3] }} Days
+            </span>
+            <h1>
+              <a href="#" style="color: black; font-weight: 700; font-size: 40px;">{{ i[1] }}</a>
+            </h1>
+            <p class="location" style="color: black;">{{ i[6] }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Transport Details Table Section -->
+<section class="ftco-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h2 class="mb-4" style="font-weight:700; color:#333;">Transport Details</h2>
+        <div style="overflow-x:auto;">
+          <table class="table table-bordered table-hover" style="min-width: 900px;">
+            <thead class="thead-dark" style="background:#343a40; color:#fff;">
+              <tr>
+                <th>Package Name</th>
+                <th>Mode</th>
+                <th>From Location</th>
+                <th>To Location</th>
+                <th>Departure Time</th>
+                <th>Arrival Time</th>
+                <th>Travel Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for t in transport %}
+              <tr>
+                <td>{{ i[1] }}</td>
+                <td>{{ t[2] }}</td>
+                <td>{{ t[3] }}</td>
+                <td>{{ t[4] }}</td>
+                <td>{{ t[5] }}</td>
+                <td>{{ t[6] }}</td>
+                <td>{{ t[7] }}</td>
+              </tr>
+              {% else %}
+              <tr>
+                <td colspan="7" class="text-center">No transport details available.</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ftco-section bg-light">
+  <div class="container">
+    <div class="row justify-content-center mb-4">
+      <div class="col-md-8 text-center">
+        <h2 class="mb-4" style="font-weight:700; color:#333;">Book This Tour</h2>
+      </div>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <form id="checkoutform"  class="p-4 bg-white shadow rounded" method="post">
+          <!-- Hidden package id-->
+          <input type="hidden" id="package_id" name="package_id" value="{{ i[0] }}">
+
+          <!-- Hidden package type: 'domestic' or 'international' -->
+          <input type="hidden" name="package_type" id="package_type" value="{{ package_type }}">
+
+          <!-- Full Name -->
+          <div class="form-group mb-3">
+            <label for="name" style="font-weight:600;">Full Name</label>
+            <input type="text" name="fullname" id="fullname" class="form-control" placeholder="Enter your full name">
+            <div class="error-message" id="name-error" style="color: red; font-size: 16px; margin-top: 5px;"></div>
+          </div>
+
+          <!-- Email -->
+          <div class="form-group mb-3">
+            <label for="email" style="font-weight:600;">Email Address</label>
+            <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email address">
+            <div class="error-message" id="email-error" style="color: red; font-size: 16px; margin-top: 5px;"></div>
+          </div>
+
+          <!-- Phone Number -->
+          <div class="form-group mb-3">
+            <label for="phone" style="font-weight:600;">Phone Number</label>
+            <input type="tel" id="phone_no" name="phone_no" class="form-control" placeholder="Enter your phone number">
+            <div class="error-message" id="phone-error" style="color: red; font-size: 16px; margin-top: 5px;"></div>
+          </div>
+
+          <!-- Hidden amount field -->
+          <input type="hidden" name="amount" id="amount" value="{{ i[4] }}">
+
+          <!-- Transport Mode Dropdown -->
+          <div class="form-group mb-3">
+            <label for="mode" style="font-weight:600;">Mode of Transport</label>
+            <select id="mode" name="mode" class="form-control">
+              <option value="" disabled selected>-- Select Mode --</option>
+            </select>
+            <div class="error-message" id="mode-error" style="color: red; font-size: 16px; margin-top: 5px;"></div>
+          </div>
+
+          <!-- Travel Date -->
+          <div class="form-group mb-3">
+            <label for="travel_date" style="font-weight:600;">Preferred Travel Date</label>
+            <select id="travel_date" name="travel_date" class="form-control">
+              <option value="" disabled selected>Select a travel date</option>
+              {% for date in travel_dates %}
+              <option value="{{ date }}">{{ date.strftime('%d %B %Y') }}</option>
+              {% endfor %}
+            </select>
+            <div class="error-message" id="date-error" style="color: red; font-size: 16px; margin-top: 5px;"></div>
+          </div>
+
+          <!-- Number of Travelers -->
+          <div class="form-group mb-3">
+            <label for="num_travelers" style="font-weight:600;">Number of Travelers</label>
+            <input type="number" id="no_of_members" name="no_of_members" class="form-control">
+            <div class="error-message" id="travel-error" style="color: red; font-size: 16px; margin-top: 5px;"></div>
+          </div>
+
+          <!-- Special Requests -->
+          <div class="form-group mb-4">
+            <label for="special_requests" style="font-weight:600;">Special Requests / Notes</label>
+            <textarea id="message" name="message" class="form-control" rows="3" placeholder="Any special requests or notes"></textarea>
+            <div class="error-message" id="message-error" style="color: red; font-size: 16px; margin-top: 5px;" ></div>
+          </div>
+
+
+
+         <!-- Book Now Button for Stripe -->
+        <div class="text-center">
+          <button type="submit"  class="btn btn-primary">Book Now</button>
+        </div>
+
+
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }} mt-3">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Removed Cashfree JS SDK and related code -->
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Transport options based on package type
+    const packageType = document.getElementById('package_type').value.toLowerCase();
+    const transportSelect = document.getElementById('mode');
+    transportSelect.innerHTML = '<option value="" disabled selected>-- Select Mode --</option>';
+
+    const options = {
+      domestic: [
+        { value: 'Bus', text: 'Bus' },
+        { value: 'Train', text: 'Train' },
+        { value: 'Flight', text: 'Flight' },
+        { value: 'Car', text: 'Car' }
+      ],
+      international: [
+        { value: 'Flight', text: 'Flight' }
+      ]
+    };
+
+    if (options[packageType]) {
+      options[packageType].forEach(opt => {
+        const optionEl = document.createElement('option');
+        optionEl.value = opt.value;
+        optionEl.textContent = opt.text;
+        transportSelect.appendChild(optionEl);
+      });
+    } else {
+      console.warn('Unknown package type:', packageType);
+    }
+  });
+
+</script>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+/*document.getElementById("checkoutform").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    // Clear all previous errors and borders first
+    const fullname = document.getElementById('fullname');
+    const email = document.getElementById('email');
+    const phone = document.getElementById('phone_no');
+    const mode = document.getElementById('mode');
+    const travel_date = document.getElementById('travel_date');
+    const no_of_members = document.getElementById('no_of_members');
+
+    // Clear errors
+    document.getElementById('name-error').textContent = '';
+    document.getElementById('email-error').textContent = '';
+    document.getElementById('phone-error').textContent = '';
+    document.getElementById('mode-error').textContent = '';
+    document.getElementById('date-error').textContent = '';
+    document.getElementById('travel-error').textContent = '';
+
+    // Clear borders
+    fullname.style.border = '';
+    email.style.border = '';
+    phone.style.border = '';
+    mode.style.border = '';
+    travel_date.style.border = '';
+    no_of_members.style.border = '';
+
+    // Check Full Name
+    if (fullname.value.trim() === '') {
+        document.getElementById('name-error').textContent = 'Full name is required';
+        fullname.style.border = '2px solid red';
+        fullname.focus();
+        return;
+    } else {
+        const namePattern = /^[A-Za-z\s]+$/;
+        if (!namePattern.test(fullname.value.trim())) {
+            document.getElementById('name-error').textContent = 'Full name can contain only letters and spaces';
+            fullname.style.border = '2px solid red';
+            fullname.focus();
+            return;
+        }
+    }
+
+    // Check Email
+    if (email.value.trim() === '') {
+        document.getElementById('email-error').textContent = 'Email is required';
+        email.style.border = '2px solid red';
+        email.focus();
+        return;
+    } else {
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(email.value.trim())) {
+            document.getElementById('email-error').textContent = 'Enter a valid email address';
+            email.style.border = '2px solid red';
+            email.focus();
+            return;
+        }
+    }
+
+    // Check Phone Number
+if (phone.value.trim() === '') {
+    document.getElementById('phone-error').textContent = 'Phone number is required';
+    phone.style.border = '2px solid red';
+    phone.focus();
+    return;
+} else {
+    // Phone number pattern: starts with 6-9 and has total 10 digits
+    const phonePattern = /^[6-9]\d{9}$/;
+    if (!phonePattern.test(phone.value.trim())) {
+        document.getElementById('phone-error').textContent = 'Enter a valid 10-digit phone number';
+        phone.style.border = '2px solid red';
+        phone.focus();
+        return;
+    }
+}
+
+
+    // Check Mode of Transport
+    if (mode.value === '') {
+        document.getElementById('mode-error').textContent = 'Select a mode of transport';
+        mode.style.border = '2px solid red';
+        mode.focus();
+        return;
+    }
+
+    // Check Travel Date
+    if (travel_date.value === '') {
+        document.getElementById('date-error').textContent = 'Select a travel date';
+        travel_date.style.border = '2px solid red';
+        travel_date.focus();
+        return;
+    }
+
+    // Check Number of Travelers
+    if (no_of_members.value === '' || parseInt(no_of_members.value) < 1) {
+        document.getElementById('travel-error').textContent = 'Enter valid number of travelers';
+        no_of_members.style.border = '2px solid red';
+        no_of_members.focus();
+        return;
+    }
+
+    
+    const form = e.target;
+    const formData = new FormData(form);
+
+    const response = await fetch("/create_razorpay_order", {
+        method: "POST",
+        body: formData
+    });
+
+    const data = await response.json();
+
+    if (data.status === "success") {
+        const options = {
+            key: "rzp_test_0L2pyQqkJzupt2",  
+            amount: data.amount,
+            currency: "INR",
+            name: "TripNest",
+            description: "Order Payment",
+            order_id: data.order_id,
+            handler: function(response) {
+                const newFormData = new FormData();
+                formData.forEach((value, key) => {
+                    newFormData.append(key, value);
+                });
+
+                fetch("/confirm_order1", {
+                    method: "POST",
+                    body: newFormData
+                })
+                .then(res => res.json())
+                .then(res => {
+                    alert("Payment Successful!");
+                    window.location.href = "/";
+                });
+            }
+        };
+
+        const rzp = new Razorpay(options);
+        rzp.open();
+    } else {
+        alert("Error creating Razorpay order");
+    }
+});*/
+
+document.getElementById("checkoutform").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    // --- 1. Check if user is logged in ---
+    const userLoggedIn = {{ 'true' if session.get('user_id') else 'false' }};
+    if (!userLoggedIn) {
+        const nextUrl = window.location.href;  // Remember current page
+        alert("Please login first to book this package!");
+        window.location.href = "{{ url_for('login') }}?next=" + encodeURIComponent(nextUrl);
+        return;
+    }
+
+    // --- 2. Form validation ---
+    const fullname = document.getElementById('fullname');
+    const email = document.getElementById('email');
+    const phone = document.getElementById('phone_no');
+    const mode = document.getElementById('mode');
+    const travel_date = document.getElementById('travel_date');
+    const no_of_members = document.getElementById('no_of_members');
+
+    // Clear previous errors and borders
+    ['name', 'email', 'phone', 'mode', 'date', 'travel'].forEach(id => {
+        document.getElementById(id + '-error').textContent = '';
+    });
+    [fullname, email, phone, mode, travel_date, no_of_members].forEach(el => el.style.border = '');
+
+    // Full Name validation
+    if (fullname.value.trim() === '') {
+        document.getElementById('name-error').textContent = 'Full name is required';
+        fullname.style.border = '2px solid red';
+        fullname.focus();
+        return;
+    } else if (!/^[A-Za-z\s]+$/.test(fullname.value.trim())) {
+        document.getElementById('name-error').textContent = 'Full name can contain only letters and spaces';
+        fullname.style.border = '2px solid red';
+        fullname.focus();
+        return;
+    }
+
+    // Email validation
+    if (email.value.trim() === '') {
+        document.getElementById('email-error').textContent = 'Email is required';
+        email.style.border = '2px solid red';
+        email.focus();
+        return;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) {
+        document.getElementById('email-error').textContent = 'Enter a valid email';
+        email.style.border = '2px solid red';
+        email.focus();
+        return;
+    }
+
+    // Phone validation
+    if (phone.value.trim() === '') {
+        document.getElementById('phone-error').textContent = 'Phone number is required';
+        phone.style.border = '2px solid red';
+        phone.focus();
+        return;
+    } else if (!/^[6-9]\d{9}$/.test(phone.value.trim())) {
+        document.getElementById('phone-error').textContent = 'Enter valid 10-digit phone number';
+        phone.style.border = '2px solid red';
+        phone.focus();
+        return;
+    }
+
+    // Mode of transport validation
+    if (mode.value === '') {
+        document.getElementById('mode-error').textContent = 'Select a mode of transport';
+        mode.style.border = '2px solid red';
+        mode.focus();
+        return;
+    }
+
+    // Travel date validation
+    if (travel_date.value === '') {
+        document.getElementById('date-error').textContent = 'Select a travel date';
+        travel_date.style.border = '2px solid red';
+        travel_date.focus();
+        return;
+    }
+
+    // Number of travelers validation
+    if (no_of_members.value === '' || parseInt(no_of_members.value) < 1) {
+        document.getElementById('travel-error').textContent = 'Enter valid number of travelers';
+        no_of_members.style.border = '2px solid red';
+        no_of_members.focus();
+        return;
+    }
+
+    // --- 3. Razorpay Payment ---
+    const form = e.target;
+    const formData = new FormData(form);
+
+    try {
+        const response = await fetch("/create_razorpay_order", { method: "POST", body: formData });
+        const data = await response.json();
+
+        if (data.status === "success") {
+            const options = {
+                key: "rzp_test_0L2pyQqkJzupt2", // Replace with live key in production
+                amount: data.amount,
+                currency: "INR",
+                name: "TripNest",
+                description: "Order Payment",
+                order_id: data.order_id,
+                handler: function(response) {
+                    const newFormData = new FormData();
+                    formData.forEach((value, key) => { newFormData.append(key, value); });
+
+                    fetch("/confirm_order1", { method: "POST", body: newFormData })
+                    .then(res => res.json())
+                    .then(res => {
+                        alert("Payment Successful!");
+                        window.location.href = "/";
+                    });
+                },
+                theme: { color: "#007bff" }
+            };
+            const rzp = new Razorpay(options);
+            rzp.open();
+        } else {
+            alert("Error creating Razorpay order");
+        }
+    } catch (err) {
+        alert("Something went wrong: " + err);
+    }
+});
+
+</script>
+
+
+
+{% endblock %}

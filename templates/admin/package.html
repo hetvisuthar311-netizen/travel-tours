@@ -1,0 +1,240 @@
+{% extends "admin/adminlayout.html" %}
+{% block content %}
+
+<!-- start: content -->
+<div id="content">
+    <div class="panel box-shadow-none content-header">
+        <div class="panel-body">
+            <div class="col-md-12">
+                <h3 class="animated fadeInLeft">Package Master</h3>   
+            </div>
+        </div>
+    </div>
+  
+    <div class="form-element">
+        <div class="col-md-12 padding-0">     
+            <div class="col-md-12">
+                <div class="col-md-12 panel">
+                    <div class="col-md-12 panel-heading">
+                        <h4>Add New Package</h4>
+                    </div>
+                    <div class="col-md-12 panel-body" style="padding-bottom:30px;">
+                        <div class="col-md-12">
+                            <form class="cmxform" id="packageForm" method="post" action="{{url_for('addpackage')}}" enctype="multipart/form-data">     
+                                <div class="form-group">
+                                    <label>Select Category</label>
+                                    <div class="col-12">
+                                        <div class="col-12 padding-0">
+                                            <select class="form-control" onchange="loadSubcategories()" id="category" name="catid">    
+                                                {% for i in cate %}                      
+                                                <option value="{{i[0]}}">{{i[1]}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>    
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Select Subcategory</label>
+                                    <div class="col-12">
+                                        <div class="col-12 padding-0">
+                                            <select class="form-control" name="subid" id="subcategory" disabled>
+                                                <option value="">--Select category first--</option>    
+                                            </select>
+                                        </div>   
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-12">
+                                    <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                                        <input type="text" class="form-text" id="package_name" name="pname">
+                                        <span class="bar"></span>
+                                        <label>Package Name</label>
+                                        <div class="error-message" id="name-error" style="color: red; font-size: 16px; margin-top: 5px;"></div>
+                                    </div>
+
+                                    <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                                        <input type="text" class="form-text" id="package_destination" name="pdestination">
+                                        <span class="bar"></span>
+                                        <label>Package Destination</label>
+                                        <div class="error-message" id="destination-error" style="color: red; font-size: 16px; margin-top: 5px;"></div>
+                                    </div>
+
+                                    <div class="form-group form-animate-text" style="margin-top:0px !important;">
+                                        <input type="number" class="form-text" id="package_duration" name="pduration">
+                                        <span class="bar"></span>
+                                        <label>Package Duration</label>
+                                        <div class="error-message" id="duration-error" style="color: red; font-size: 16px; margin-top: 5px;"></div>
+                                    </div>
+
+                                    <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                                        <input type="number" class="form-text" id="package_price" name="pprice">
+                                        <span class="bar"></span>
+                                        <label>Package Price</label>
+                                        <div class="error-message" id="price-error" style="color: red; font-size: 16px; margin-top: 5px;"></div>
+                                    </div>
+   
+                                    <div class="form-group form-animate-text">   
+                                        <input type="file" class="form-text" name="image" id="package_image"> 
+                                        <span class="bar"></span>
+                                        <label>Package-Image</label>
+                                        <div class="error-message" id="image-error" style="color: red; font-size: 16px; margin-top: 5px;"></div>
+                                    </div>
+
+                                    <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                                        <textarea class="form-text" id="package_description" name="pdescription"></textarea>
+                                        <span class="bar"></span>
+                                        <label>Package Description</label>
+                                        <div class="error-message" id="description-error" style="color: red; font-size: 16px; margin-top: 5px;"></div>
+                                    </div>
+
+                                    <div class="form-group" style="margin-top:40px !important;">
+                                        <label>
+                                            <input type="checkbox" name="is_international" value="1" style="margin-right: 8px;">
+                                            Is this package International?
+                                        </label>
+                                    </div>
+                                   
+                                    <div class="col-md-12">
+                                        <input class="submit btn btn-info" type="submit" value="Submit">
+                                    </div>
+
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>
+<!-- end: content -->
+
+<script>
+function loadSubcategories() {
+    const categoryId = document.getElementById("category").value;
+    const subDropdown = document.getElementById("subcategory");
+
+    subDropdown.innerHTML = '<option>Loading...</option>';
+    subDropdown.disabled = true;
+
+    if (!categoryId) {
+        subDropdown.innerHTML = '<option value="">-- Select Category First --</option>';
+        subDropdown.disabled = true;
+        return;
+    }
+
+    fetch(`/get_subcategories/${categoryId}`)
+        .then(response => {
+            if (!response.ok) throw new Error("Network response was not ok");
+            return response.json();
+        })
+        .then(data => {
+            subDropdown.innerHTML = '<option value="">-- Select Subcategory --</option>';
+            data.forEach(sub => {
+                const option = document.createElement("option");
+                option.value = sub.id;
+                option.textContent = sub.name;
+                subDropdown.appendChild(option);
+            });
+            subDropdown.disabled = false;
+        })
+        .catch(err => {
+            console.error("Failed to load subcategories:", err);
+            subDropdown.innerHTML = '<option>Error loading subcategories</option>';
+            subDropdown.disabled = true;
+        });
+}
+
+    document.addEventListener("DOMContentLoaded", function () {
+    loadSubcategories();
+});
+</script>
+<script>
+document.getElementById('packageForm').addEventListener('submit',async function(e){
+    e.preventDefault();
+
+    const category = document.getElementById('category');
+    const subcategory = document.getElementById('subcategory');
+    const name = document.getElementById('package_name');
+    const destination = document.getElementById('package_destination');
+    const duration = document.getElementById('package_duration');
+    const price = document.getElementById('package_price');
+    const image = document.getElementById('package_image');
+    const description = document.getElementById('package_description');
+
+    document.getElementById('name-error').textContent = '';
+    document.getElementById('destination-error').textContent = '';
+    document.getElementById('duration-error').textContent = '';
+    document.getElementById('price-error').textContent = '';
+    document.getElementById('image-error').textContent = '';
+    document.getElementById('description-error').textContent = '';
+
+    //subcategory validation
+    if(subcategory.value.trim() === '')
+    {
+        alert('Please select a Subcategory');
+        subcategory.focus();
+        return;
+    }
+    //name validation
+    if(name.value.trim() === '')
+    {
+        document.getElementById('name-error').textContent = 'Package name is required!';
+        name.focus();
+        return;
+    }
+
+    //destination validation
+    if(destination.value.trim() === '')
+    {
+        document.getElementById('destination-error').textContent = 'Destination name is required!';
+        destination.focus();
+        return;
+    }
+
+    //duration validation
+    if(duration.value.trim() === '')
+    {
+        document.getElementById('duration-error').textContent = 'Duration is required!';
+        duration.focus();
+        return;
+    }
+
+    //price validation
+    if(price.value.trim() === '')
+    {
+        document.getElementById('price-error').textContent = 'Price is required!';
+        price.focus();
+        return;
+    }
+
+    //image validation
+    if(image.value.trim() === '')
+    {
+        document.getElementById('image-error').textContent = 'Image is required!';
+        image.focus();
+        return;
+    }
+    else
+    {
+        const imagePattern = /(\.jpg|\.jpeg|\.png)$/i;
+        if(!imagePattern.test(image.value.trim()))
+        {
+            document.getElementById('image-error').textContent = 'Please upload file having extensions .jpeg/.jpg/.png only.';
+            image.focus();
+            return;
+        }
+    }
+
+    //description validation
+    if(description.value.trim() === '')
+    {
+        document.getElementById('description-error').textContent = 'Description is required!';
+        description.focus();
+        return;
+    }
+    this.submit();
+});
+</script>
+{% endblock %}

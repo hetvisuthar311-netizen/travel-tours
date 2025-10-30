@@ -1,0 +1,189 @@
+{% extends "admin/adminlayout.html" %}
+{% block content %}
+
+<!-- start: content -->
+<div id="content">
+    <div class="panel box-shadow-none content-header">
+        <div class="panel-body">
+            <div class="col-md-12">
+                <h3 class="animated fadeInLeft">Package Master</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-element">
+        <div class="col-md-12 padding-0">
+            <div class="col-md-12">
+                <div class="col-md-12 panel">
+                    
+                    <div class="col-md-12 panel-heading">
+                        <h4>Update Package</h4>
+                    </div>
+                    
+                    <div class="col-md-12 panel-body" style="padding-bottom:30px;">
+                        <div class="col-md-12">
+                            <form class="cmxform" id="packageForm" method="post" action="{{ url_for('updatepackage',id=data[0]) }}" enctype="multipart/form-data">
+                                
+                                <div class="col-md-12">
+                                    
+                                    <div class="form-group">
+                                        <label>Select Option</label>
+                                        <div class="col-12">
+                                            <div class="col-12 padding-0">
+                                                <select class="form-control" name="subcateid">
+                                                    {% for i in subcate %}
+                                                        {% if data[7] == i[0] %}
+                                                            <option value="{{ i[0] }}" selected>{{ i[2] }}</option>
+                                                        {% else %}
+                                                            <option value="{{ i[0] }}">{{ i[2] }}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <input type="hidden" class="form-text" id="validate_firstname" name="id" required value="{{ data[0] }}">
+                                    
+                                    <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                                        <input type="text" class="form-text" id="package_name" name="pname" value="{{ data[1] }}">
+                                        <span class="bar"></span>
+                                        <div class="error-message" id="name-error" style="color: red; font-size: 16px; margin-top: 5px;"></div>
+                                        <label>Package Name</label>
+                                    </div>
+
+                                    <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                                        <input type="text" class="form-text" id="package_destination" name="pdestination" value="{{ data[2] }}">
+                                        <span class="bar"></span>
+                                        <div class="error-message" id="destination-error" style="color: red; font-size: 16px; margin-top: 5px;"></div>
+                                        <label>Package Destination</label>
+                                    </div>
+
+                                    <label style="font-size: 13px;">Package Duration</label>
+                                    <div class="form-group form-animate-text" style="margin-top:0px !important;">
+                                        <input type="number" class="form-text" id="package_duration" name="pduration" value="{{ data[3] }}">
+                                        <span class="bar"></span>
+                                        <div class="error-message" id="duration-error" style="color: red; font-size: 16px; margin-top: 5px;"></div>
+                                    </div>
+
+                                    <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                                        <input type="number" class="form-text" id="package_price" name="pprice" value="{{ data[4] }}">
+                                        <span class="bar"></span>
+                                        <div class="error-message" id="price-error" style="color: red; font-size: 16px; margin-top: 5px;"></div>
+                                        <label>Package Price</label>
+                                    </div>
+
+                                    <label>Package-Image</label>
+                                    <div class="form-group form-animate-text">
+                                        <input type="file" class="form-text" name="image" id="package_image">
+                                        <span class="bar"></span>
+                                        <div class="error-message" id="image-error" style="color: red; font-size: 16px; margin-top: 5px;"></div>
+                                    </div>
+                                    <img src="../../{{ data[5] }}" alt="" width="100" height="100">
+
+                                    <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                                        <textarea class="form-text" id="package_description" name="pdescription">{{ data[6] }}</textarea>
+                                        <span class="bar"></span>
+                                        <label>Package Description</label>
+                                        <div class="error-message" id="description-error" style="color: red; font-size: 16px; margin-top: 5px;"></div>
+                                    </div>
+
+                                    <div class="form-group" style="margin-top:40px !important;">
+                                        <label style="font-weight: normal;">
+                                            <input type="checkbox" name="is_international" value="1" {% if data[8] == 1 %}checked{% endif %} style="margin-right: 8px;">
+                                            Is this package International?
+                                        </label>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <input class="submit btn btn-info" type="submit" value="Submit">
+                                    </div>
+                                
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end: content -->
+
+<script>
+    document.getElementById('packageForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const name = document.getElementById('package_name');
+        const destination = document.getElementById('package_destination');
+        const duration = document.getElementById('package_duration');
+        const price = document.getElementById('package_price');
+        const image = document.getElementById('package_image');
+        const description = document.getElementById('package_description');
+
+        document.getElementById('name-error').textContent = '';
+        document.getElementById('destination-error').textContent = '';
+        document.getElementById('duration-error').textContent = '';
+        document.getElementById('price-error').textContent = '';
+        document.getElementById('image-error').textContent = '';
+        document.getElementById('description-error').textContent = '';
+
+        if (name.value.trim() === '') {
+            document.getElementById('name-error').textContent = 'Name id required!';
+            name.focus();
+            return;
+        } else {
+            const namePattern = /^[A-Za-z\s&,-]+$/;
+            if (!namePattern.test(name.value.trim())) {
+                document.getElementById('name-error').textContent = 'Name can contain only letters and spaces.';
+                name.focus();
+                return;
+            }
+        }
+
+        if (destination.value.trim() === '') {
+            document.getElementById('destination-error').textContent = 'Destination is required!';
+            destination.focus();
+            return;
+        } else {
+            const destinationPattern = /^[A-Za-z\s&,-]+$/;
+            if (!destinationPattern.test(destination.value.trim())) {
+                document.getElementById('destination-error').textContent = 'Destination name can contain only letters and spaces';
+                destination.focus();
+                return;
+            }
+        }
+
+        if (duration.value.trim() === '') {
+            document.getElementById('duration-error').textContent = 'Duration is required!';
+            duration.focus();
+            return;
+        }
+
+        if (price.value.trim() === '') {
+            document.getElementById('price-error').textContent = 'Price is required!';
+            price.focus();
+            return;
+        }
+
+        if (image.value) {
+            const imagePattern = /(\.jpg|\.jpeg|\.png)$/i;
+            if (!imagePattern.test(image.value.trim())) {
+                document.getElementById('image-error').textContent = 'Please upload file having extensions .jpg/.jpeg/.png';
+                image.focus();
+                return;
+            }
+        }
+
+        if (description.value.trim() === '') {
+            document.getElementById('description-error').textContent = 'Description is required!';
+            description.focus();
+            return;
+        }
+
+        this.submit();
+    });
+</script>
+
+{% endblock %}

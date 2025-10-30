@@ -1,0 +1,125 @@
+{% extends "admin/adminlayout.html" %}
+{% block content %}
+
+<!-- start: content -->
+<div id="content">
+
+  <!-- Page Header -->
+  <div class="panel box-shadow-none content-header">
+    <div class="panel-body">
+      <div class="col-md-12">
+        <h3 class="animated fadeInLeft">Booking Master</h3>
+      </div>
+    </div>
+  </div>
+  <!-- End Page Header -->
+
+  <!-- Booking List Section -->
+  <div class="form-element">
+    <div class="col-md-12 padding-0">
+      <div class="col-md-12">
+        <div class="col-md-12 panel">
+
+          <!-- Panel Heading -->
+          <div class="col-md-12 panel-heading">
+            <h4>Booking List</h4>
+          </div>
+
+          <!-- Panel Body -->
+          <div class="col-md-12 panel-body" style="padding-bottom:30px;">
+            <div class="col-md-12">
+
+              <!-- Responsive Table -->
+              <div class="responsive-table">
+                <table id="datatables-example" class="table table-striped table-bordered" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                      <th>Booking ID</th>
+                      <th>Package Name</th>
+                      <th>Full Name</th>
+                      <th>Email</th>
+                      <th>Phone No</th>
+                      <th>Mode</th>
+                      <th>Travel Date</th>
+                      <th>No of Travelers</th>
+                      <th>Message</th>
+                      <th>Amount</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {% for i in booking %}
+                    <tr>
+                      <td>{{ i[0] }}</td>
+                      <td>{{ i[12] }}</td>
+                      <td>{{ i[3] }}</td>
+                      <td>{{ i[4] }}</td>
+                      <td>{{ i[5] }}</td>
+                      <td>{{ i[6] }}</td>
+                      <td>{{ i[7] }}</td>
+                      <td>{{ i[8] }}</td>
+                      <td>{{ i[9] }}</td>
+                      <td>{{ i[10] }}</td>
+
+                      <!-- Status Column -->
+                      <td class="status-cell" data-id="{{ i[0] }}">
+                        {% set status = i[11]|lower %}
+                        {% if status == 'confirmed' %}
+                          <span class="badge bg-success">Confirmed</span>
+                        {% elif status == 'cancelled' %}
+                          <span class="badge bg-danger">Cancelled</span>
+                        {% else %}
+                          <button class="btn btn-sm btn-primary confirm-btn">Confirm</button>
+                        {% endif %}
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              <!-- End Responsive Table -->
+
+            </div>
+          </div>
+          <!-- End Panel Body -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Booking List Section -->
+
+</div>
+<!-- end: content -->
+
+<!-- Confirmation Script -->
+<script>
+document.addEventListener('click', function (e) {
+  if (e.target && e.target.classList.contains('confirm-btn')) {
+    const button = e.target;
+    const cell = button.closest('.status-cell');
+    const bookingId = cell.dataset.id;
+
+    fetch('/admin/confirm_booking', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ booking_id: bookingId })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 'success') {
+        cell.innerHTML = '<span class="badge bg-success">Confirmed</span>';
+      } else {
+        alert('Confirmation failed!');
+      }
+    })
+    .catch(err => {
+      console.error('AJAX error:', err);
+      alert('Something went wrong!');
+    });
+  }
+});
+</script>
+
+{% endblock %}

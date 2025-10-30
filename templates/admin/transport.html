@@ -1,0 +1,235 @@
+{% extends "admin/adminlayout.html" %}
+{% block content %}
+
+<!-- start: content -->
+<div id="content">
+    <div class="panel box-shadow-none content-header">
+        <div class="panel-body">
+            <div class="col-md-12">
+                <h3 class="animated fadeInLeft">Add Transport Details</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-element">
+        <div class="col-md-12 padding-0">
+            <div class="col-md-12">
+                <div class="col-md-12 panel">
+                    <div class="col-md-12 panel-heading">
+                        <h4>Add New Transport</h4>
+                    </div>
+                    <div class="col-md-12 panel-body" style="padding-bottom:30px;">
+                        <div class="col-md-12">
+                            <form class="cmxform" id="transportForm" method="post" action="{{ url_for('addtransport') }}">
+                                
+                                <!-- Select package -->
+                                <div class="form-group">
+                                    <label>Select Package</label>
+                                    <div class="col-12 padding-0">
+                                        <select class="form-control" name="package_id" id="packageSelect">
+                                            <option value="">-- Select Package --</option>
+                                            {% for p in transport %}                         
+                                                <option value="{{ p[0] }}" data-international="{{ p[2] }}">{{ p[1] }}</option> 
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Mode of Transport Dropdown -->
+                                <div class="form-group">
+                                    <label>Select Mode</label>
+                                    <div class="col-12 padding-0">
+                                        <select class="form-control" id="mode" name="mode">
+                                            <option value="">-- Select Mode --</option>
+                                            <option value="Bus">Bus</option>
+                                            <option value="Train">Train</option>
+                                            <option value="Flight">Flight</option>
+                                            <option value="Car">Car</option>       
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- From Location -->
+                                <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                                    <input type="text" class="form-text" id="f_location" name="from_location">
+                                    <span class="bar"></span>
+                                    <label>From Location</label>
+                                    <div class="error-message" id="loc-error" style="color: red; font-size: 16px; margin-top: 5px;"></div>
+                                </div>
+
+                                <!-- To Location -->
+                                <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                                    <input type="text" class="form-text" id="t_location" name="to_location">
+                                    <span class="bar"></span>
+                                    <label>To Location</label>
+                                    <div class="error-message" id="loca-error" style="color: red; font-size: 16px; margin-top: 5px;"></div>
+                                </div>
+
+                                <!-- Departure Time -->
+                                <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                                    <input type="time" class="form-text" id="depar_time" name="departure_time">
+                                    <span class="bar"></span>
+                                    <label>Departure Time</label>
+                                    <div class="error-message" id="departure-error" style="color: red; font-size: 16px; margin-top: 5px;"></div>
+                                </div>
+
+                                <!-- Arrival Time -->
+                                <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                                    <input type="time" class="form-text" id="arri_time" name="arrival_time">
+                                    <span class="bar"></span>
+                                    <label>Arrival Time</label>
+                                    <div class="error-message" id="arrival-error" style="color: red; font-size: 16px; margin-top: 5px;"></div>
+                                </div>
+
+                                <!-- Travel Date -->
+                                <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                                    <input type="date" class="form-text" id="tra_date" name="travel_date">
+                                    <span class="bar"></span>
+                                    <label for="ptravel_date">Travel Date</label>
+                                    <div class="error-message" id="date-error" style="color: red; font-size: 16px; margin-top: 5px;"></div>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <div class="col-md-12" style="margin-top:40px !important;">
+                                    <input class="submit btn btn-info" type="submit" value="Submit">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>   
+        </div>
+    </div>
+</div>
+<!-- end: content -->
+
+<!-- Script for transport options -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    let packageSelect = document.getElementById("packageSelect");
+    let modeSelect = document.getElementById("mode");
+
+    function updateTransportOptions() {
+      let isInternational = packageSelect.selectedOptions[0].dataset.international;
+
+      modeSelect.innerHTML = ""; 
+
+      if (isInternational === "1") {
+        modeSelect.innerHTML = `<option value="">-- Select Mode --</option> 
+        <option value="Flight">Flight</option>`;
+      } else {
+        modeSelect.innerHTML = `
+          <option value="">-- Select Mode --</option>
+          <option value="Bus">Bus</option>
+          <option value="Train">Train</option>
+          <option value="Flight">Flight</option>
+          <option value="Car">Car</option>
+        `;
+      }
+    }
+
+    packageSelect.addEventListener("change", updateTransportOptions);
+    updateTransportOptions(); 
+  });
+</script>
+
+<!-- Validation Script -->
+<script>
+    document.getElementById('transportForm').addEventListener('submit', async function(e){
+        e.preventDefault();
+
+        const packageSelect = document.getElementById('packageSelect');
+        const mode = document.getElementById('mode');
+        const from_location = document.getElementById('f_location');
+        const to_location = document.getElementById('t_location');
+        const departure_time = document.getElementById('depar_time');
+        const arrival_time = document.getElementById('arri_time');
+        const travel_date = document.getElementById('tra_date');
+
+        document.getElementById('loc-error').textContent = '';
+        document.getElementById('loca-error').textContent = '';
+        document.getElementById('departure-error').textContent = '';
+        document.getElementById('arrival-error').textContent = '';
+        document.getElementById('date-error').textContent = '';
+
+        if(packageSelect.value === '') {
+            alert('Please select a packages');
+            packageSelect.focus();
+            return;
+        }
+
+        if(mode.value === '') {
+            alert('Please select transport mode!');
+            mode.focus();
+            return;
+        }
+
+        if(from_location.value.trim() === '') {
+            document.getElementById('loc-error').textContent = 'From location is required!';
+            from_location.focus();
+            return;
+        } else {
+            locationPattern = /^[A-Za-z\s,.-]+$/;
+            if(!locationPattern.test(from_location.value.trim())) {
+                document.getElementById('loc-error').textContent = 'From location can contain only letters, spaces, commas, dots or hyphens';
+                from_location.focus();
+                return;
+            }
+        }
+
+        if(to_location.value.trim() === '') {
+            document.getElementById('loca-error').textContent = 'To location is required!';
+            to_location.focus();
+            return;
+        } else {
+            if(!locationPattern.test(to_location.value.trim())) {
+                document.getElementById('loca-error').textContent = 'To location can contain only letters, spaces, commas, dots or hyphens';
+                to_location.focus();
+                return;
+            }
+        }
+
+        if(departure_time.value.trim() === '') {
+            document.getElementById('departure-error').textContent = 'Departure time is required!';
+            departure_time.focus();
+            return;
+        }
+
+        if(arrival_time.value.trim() === '') {
+            document.getElementById('arrival-error').textContent = 'Arrival time is required!';
+            arrival_time.focus();
+            return;
+        }
+
+        if(departure_time.value && arrival_time.value) {
+            const dep = departure_time.value.split(':');
+            const arr = arrival_time.value.split(':');
+            const depMinutes = parseInt(dep[0])*60 + parseInt(dep[1]);
+            const arrMinutes = parseInt(arr[0])*60 + parseInt(arr[1]);
+
+            if(arrMinutes <= depMinutes) {
+                document.getElementById('arrival-error').textContent = 'Arrival time must be after departure time!';
+                arrival_time.focus();
+                return;
+            }
+        }
+
+        if(travel_date.value.trim() === '') {
+            document.getElementById('date-error').textContent = 'Travel date is required!';
+            travel_date.focus();
+            return;
+        } else {
+            const today = new Date();
+            const travel = new Date(travel_date.value);
+            today.setHours(0,0,0,0);
+            if(travel < today) {
+                document.getElementById('date-error').textContent = 'Travel date cannot be in the past!';
+                travel_date.focus();
+                return;
+            }
+        }
+        this.submit();
+    });
+</script>
+
+{% endblock %}
