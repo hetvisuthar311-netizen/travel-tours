@@ -1,0 +1,95 @@
+{% extends "user/userlayout.html" %}
+{% block content %}
+
+<section class="hero-wrap position-relative" style="background-image: url(../../static/user/images/destination-4.jpg); background-size: cover; background-position: center; height: 75vh; padding-bottom: 80px;">
+  <!-- Overlay with semi-transparent black -->
+  <div class="position-absolute top-0 start-0 w-100 h-100" style="background-color: rgba(0, 0, 0, 0.5);"></div>
+
+  <div class="container" style="height: 100%;">
+    <div class="row no-gutters slider-text align-items-end justify-content-center" style="height: 100%;">
+      <div class="col-md-9 ftco-animate pb-5 text-center" style="position: relative; z-index: 2;">
+        <p class="breadcrumbs text-white">
+          <span class="mr-2">
+            <a href="{{url_for('userdashboard')}}" class="text-white">Home <i class="fa fa-chevron-right"></i></a>
+          </span> 
+          <span>My Bookings <i class="fa fa-chevron-right"></i></span>
+        </p>
+        <h1 class="mb-0 bread text-white">Booking History</h1>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="ftco-section bg-light">
+  <div class="container">
+    <div class="row justify-content-center mb-4">
+      <div class="col-md-10 text-center">
+        <h2 class="mb-4">My Booking History</h2>
+      </div>
+    </div>
+
+    {% if bookings %}
+    <div class="row">
+      <div class="col-md-12">
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
+              <tr>
+                <th>Booking Id</th>
+                <th>Package Name</th>
+                <th>Package Destination</th>
+                <th>Travel Date</th>
+                <th>Members</th>
+                <th>Mode</th>
+                <th>Total Price</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for b in bookings %}
+              <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ b.package_name }}</td>
+                <td>{{ b.package_destination }}</td>
+                <td>{{ b.travel_date.strftime('%d-%m-%Y') }}</td>
+                <td>{{ b.no_of_members }}</td>
+                <td>{{ b.mode }}</td>
+                <td>₹{{ b.total_price }}</td>
+                <td>
+  {% if b.status.lower() == 'confirmed' %}
+    <span class="badge badge-success">Confirmed</span>
+  {% elif b.status.lower() == 'cancelled' %}
+    <span class="badge badge-danger">Cancelled</span>
+  {% else %}
+    <span class="badge badge-warning">Pending</span>
+  {% endif %}
+</td>
+
+                <td>
+                  {% if b.status != 'cancelled' %}
+                  <form action="{{ url_for('cancelbooking') }}" method="POST" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+                    <input type="hidden" name="booking_id" value="{{ b.booking_id }}">
+                    <button type="submit" class="btn btn-sm btn-danger">Cancel</button>
+                  </form>
+                  {% else %}
+                    <button class="btn btn-sm btn-secondary" disabled>Cancelled</button>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <div class="row">
+      <div class="col-md-12 text-center">
+        <p>You have not made any bookings yet.</p>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

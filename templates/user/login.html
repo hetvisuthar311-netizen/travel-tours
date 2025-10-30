@@ -1,0 +1,313 @@
+{% extends "user/userlayout.html" %}
+{% block content %}
+
+<section class="hero-wrap position-relative" style="background-image: url(../../static/user/images/destination-4.jpg); background-size: cover; background-position: center; height: 75vh; padding-bottom: 80px;">
+  <!-- Overlay with semi-transparent black -->
+  <div class="position-absolute top-0 start-0 w-100 h-100" style="background-color: rgba(0, 0, 0, 0.5);"></div>
+
+  <div class="container" style="height: 100%;">
+    <div class="row no-gutters slider-text align-items-end justify-content-center" style="height: 100%;">
+      <div class="col-md-9 ftco-animate pb-5 text-center" style="position: relative; z-index: 2;">
+        <p class="breadcrumbs text-white">
+          <span class="mr-2">
+            <a href="{{url_for('userdashboard')}}" class="text-white">Home <i class="fa fa-chevron-right"></i></a>
+          </span> 
+          <span>Login<i class="fa fa-chevron-right"></i></span>
+        </p>
+        <h1 class="mb-0 bread text-white">Welcome Back</h1>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Login Form Section -->
+<section class="form-section">
+  <div class="container">
+    <div class="row justify-content-center mb-4">
+      <div class="col-md-8 text-center">
+        <h2 class="form-heading">Glad to see you again!</h2>
+        <p class="subheading">Log in to continue exploring amazing tours and experiences.</p>
+      </div>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <form action="{{ url_for('login') }}" method="POST" class="form-container mx-auto">
+      
+          <!-- Email -->
+          <div class="form-group">
+            <label for="uemail">Email Address</label>
+            <input type="email" id="uemail" name="uemail" class="form-control" placeholder="Enter your email">
+            <div class="error-message" id="email-error"></div>
+          </div>
+
+          <!-- Password -->
+          <div class="form-group">
+            <label for="upassword">Password</label>
+            <input type="password" id="upassword" name="upassword" class="form-control" placeholder="Enter your password">
+            <div class="error-message" id="password-error"></div>
+          </div>
+
+          <!-- Links -->
+          <div class="form-links">
+            <a href="{{ url_for('forgotpassword') }}">Forgot Password?</a>
+            <a href="{{ url_for('registration') }}">Sign Up</a>
+          </div>
+
+          <!-- Submit Button Centered -->
+          <div class="btn-wrapper mt-4">
+            <button type="submit" class="btn-submit">Login</button>
+          </div>
+
+           <!-- Flash Messages (Centered) -->
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              <div class="flash-container text-center mt-3">
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ category }} d-inline-block" role="alert">
+                    {{ message }}
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+          {% endwith %}
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JavaScript Redirect After Delay -->
+{% if redirect_to %}
+<script>
+  setTimeout(function () {
+    window.location.href = "{{ redirect_to }}";
+  }, 2000); // Wait 2 seconds before redirecting
+</script>
+{% endif %}
+
+<!-- Embedded CSS -->
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: white;
+  }
+
+  .form-section {
+    padding: 60px 20px;
+    background: linear-gradient(to bottom right,rgb(249, 250, 251),rgb(238, 241, 243));
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: auto;
+  }
+
+  .form-heading {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #0c4a6e;
+    margin-bottom: 10px;
+  }
+
+  .subheading {
+    font-size: 1rem;
+    color: #475569;
+    margin-bottom: 30px;
+  }
+
+  .form-container {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 8px;
+    display: block;
+    font-size: 16px;
+  }
+  .alert-success { 
+  background-color: #d1fae5; 
+  color: #065f46; 
+  padding: 12px 24px; 
+  border-radius: 8px; 
+  margin-top: 15px; 
+  font-size: 16px; 
+  font-weight: 500; 
+}
+.alert-warning {
+  background-color: #fef3c7; 
+  color: #78350f;
+  padding: 12px 24px; 
+  border-radius: 8px; 
+  margin-top: 15px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+
+  .form-control {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    transition: 0.3s ease;
+    background-color: #f9fafb;
+  }
+
+  .error-message{
+    font-size: 16px;
+    margin-top: 5px;
+    color: red;
+    background-color: transparent;
+  }
+
+  .form-control:focus {
+    outline: none;
+    border-color: #38bdf8;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+  }
+
+  .btn-submit {
+    background-color: #0ea5e9;
+    color: #fff;
+    padding: 12px 30px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn-submit:hover {
+    background-color: #0284c7;
+  }
+
+  .form-links {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+    font-size: 0.95rem;
+  }
+
+  .form-links a {
+    color: #0ea5e9;
+    text-decoration: underline;
+    font-size: 18px;
+  }
+
+  .form-links a:hover {
+    text-decoration: underline;
+  }
+
+  .btn-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+  }
+
+  .alert {
+  background-color: transparent !important;
+  padding: 12px 24px;
+  margin-top: 15px;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: 500;
+  box-shadow: none;
+  border: none;
+}
+
+
+  .alert-success {
+    color: rgb(9, 148, 55);
+  }
+
+  .alert-danger {
+    color: rgb(247, 64, 64);
+  }
+
+  .alert-warning {
+    color: rgb(243, 157, 51);
+  }
+
+  .alert-info {
+    color: rgb(24, 55, 142);
+  }
+
+  .flash-container {
+    width: 100%;
+    text-align: center;
+  }
+
+  @media (max-width: 576px) {
+    .form-container {
+      padding: 25px;
+    }
+
+    .form-links {
+      flex-direction: column;
+      gap: 10px;
+      text-align: center;
+    }
+  }
+</style>
+
+<script>
+  document.querySelector('form').addEventListener("submit", function (e){
+    const email = document.getElementById('uemail');
+    const password = document.getElementById('upassword');
+
+    document.getElementById('email-error').innerText="";
+    document.getElementById('password-error').innerText="";
+
+    email.style.border = '';
+    password.style.border = '';
+
+    let firstInvalidField = null;
+
+    //email validation
+    if(email.value.trim() === ''){
+      document.getElementById('email-error').innerText = "Email is required!";
+      email.style.border = '2px solid red';
+      firstInvalidField = email;
+    }
+    //password validation
+    else if(password.value.trim() === ''){
+      document.getElementById('password-error').innerText = "Password is required!";
+      password.style.border = '2px solid red';
+      firstInvalidField = password;
+    }
+    
+    if(firstInvalidField){
+      e.preventDefault();
+      firstInvalidField.focus();
+      firstInvalidField.scrollIntoView({ behavior : "smooth", block :"center"});
+    }
+
+  });
+</script>
+<script>
+  // Auto-hide flash messages after 3 seconds
+  setTimeout(function() {
+    let alerts = document.querySelectorAll('.alert');
+    alerts.forEach(function(alert) {
+      alert.style.transition = "opacity 0.5s ease";
+      alert.style.opacity = "0"; // fade out
+      setTimeout(() => alert.remove(), 500); // remove from DOM after fade
+    });
+  }, 4000); 
+</script>
+
+{% endblock %}

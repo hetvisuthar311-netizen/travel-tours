@@ -1,0 +1,200 @@
+{% extends 'user/userlayout.html' %}
+{% block content %}
+
+<section class="hero-wrap position-relative" style="background-image: url(../../static/user/images/destination-4.jpg); background-size: cover; background-position: center; height: 75vh; padding-bottom: 80px;">
+  <!-- Overlay with semi-transparent black -->
+  <div class="position-absolute top-0 start-0 w-100 h-100" style="background-color: rgba(0, 0, 0, 0.5);"></div>
+
+  <div class="container" style="height: 100%;">
+    <div class="row no-gutters slider-text align-items-end justify-content-center" style="height: 100%;">
+      <div class="col-md-9 ftco-animate pb-5 text-center" style="position: relative; z-index: 2;">
+        <p class="breadcrumbs text-white">
+          <span class="mr-2">
+            <a href="{{url_for('userdashboard')}}" class="text-white">Home <i class="fa fa-chevron-right"></i></a>
+          </span> 
+          <span>Feedback <i class="fa fa-chevron-right"></i></span>
+        </p>
+        <h1 class="mb-0 bread text-white">Share Your Experience</h1>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+{#<section class="hero-wrap hero-wrap-2 js-fullheight" style="background-image: url(../../static/user/images/destination-4.jpg);">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row no-gutters slider-text js-fullheight align-items-end justify-content-center">
+      <div class="col-md-9 ftco-animate pb-5 text-center">
+        <p class="breadcrumbs">
+          <span class="mr-2">
+            <a href="{{ url_for('userdashboard') }}">Home <i class="fa fa-chevron-right"></i></a>
+          </span> 
+          <span>Feedback<i class="fa fa-chevron-right"></i></span>
+        </p>
+        <h1 class="mb-0 bread">Share your Experience</h1>
+      </div>
+    </div>
+  </div>
+</section>#}
+
+<section class="ftco-section bg-light">
+  <div class="container">
+    <div class="row justify-content-center mb-4">
+      <div class="col-md-8 text-center">
+        <h2 class="mb-2" style="font-weight:700; color:#333;">We’d Love to Hear From You</h2>
+<p>Tell us about your experience with Pacific Travel. Your feedback helps us improve!</p>
+
+      </div>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <form class="p-4 bg-white shadow rounded" action="{{url_for('feedback')}}" method="post" enctype="multipart/form-data" id="feedbackform">
+          <!-- Full Name -->
+          <div class="form-group mb-3">
+            <label for="name" style="font-weight:600;">Your Full Name</label>
+            <input type="text" name="name" id="name" class="form-control">
+            <div class="error-message" id="name-error" style="color: red; margin-top: 5px; font-size: 16px;"></div>
+          </div>
+
+          <!-- Email -->
+          <div class="form-group mb-3">
+            <label for="email" style="font-weight:600;">Your Email Address</label>
+            <input type="email" id="email" name="email" class="form-control">
+            <div class="error-message" id="email-error" style="color: red; margin-top: 5px; font-size: 16px;"></div>
+          </div>
+
+          <!-- Phone Number -->
+          <div class="form-group mb-3">
+            <label for="phone" style="font-weight:600;">Contact Number</label>
+            <input type="tel" id="phone" name="phone" class="form-control">
+            <div class="error-message" id="phone-error" style="color: red; margin-top: 5px; font-size: 16px;"></div>
+          </div>
+
+          <!-- image -->
+          <div class="form-group mb-3">
+            <label for="image" style="font-weight: 600;">Upload Your Photo</label>
+            <input type="file" id="feedback_image" name="feedback_image" class="form-control">
+            <div class="error-message" id="image-error" style="color: red; margin-top: 5px; font-size: 16px;"></div>
+          </div>
+
+          <!--post-->
+          <div class="form-group mb-3">
+            <label for="post" style="font-weight: 600;">Your Designation</label>
+            <input type="text" id="post" name="post" class="form-control">
+            <div class="error-message" id="post-error" style="color: red; margin-top: 5px; font-size: 16px;"></div>
+          </div>
+
+          <!-- Special Requests -->
+          <div class="form-group mb-4">
+            <label for="special_requests" style="font-weight:600;">Your Message or Reviews</label>
+            <textarea id="message" name="message" class="form-control" rows="3" placeholder="Any special requests or notes"></textarea>
+            <div class="error-message" id="message-error" style="color: red; margin-top: 5px; font-size: 16px;"></div>
+          </div>
+
+         <!-- Book Now Button for Stripe -->
+        <div class="text-center">
+        <button type="submit"  class="btn btn-primary">Send Feedback</button>
+        </div>
+
+
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }} mt-3">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+document.getElementById('feedbackform').addEventListener("submit", async function(e){
+  e.preventDefault();
+
+  const name = document.getElementById('name');
+  const email = document.getElementById('email');
+  const phone = document.getElementById('phone');
+  const image = document.getElementById('feedback_image');
+  const post = document.getElementById('post');
+  const message = document.getElementById('message');
+
+  document.getElementById('name-error').textContent='';
+  document.getElementById('email-error').textContent='';
+  document.getElementById('phone-error').textContent='';
+  document.getElementById('image-error').textContent='';
+  document.getElementById('post-error').textContent='';
+  document.getElementById('message-error').textContent='';
+
+  name.style.border = '';
+  email.style.border = '';
+  phone.style.border = '';
+  image.style.border = '';
+  post.style.border = '';
+  message.style.border = '';
+
+  if(name.value.trim() === ''){
+    document.getElementById('name-error').textContent = "Name is required!";
+    name.style.border = '2px solid red';
+    name.focus();
+    return;
+  }
+  // Email required and format check
+  if(email.value.trim() === ''){
+    document.getElementById('email-error').textContent = "Email is required!";
+    email.style.border = '2px solid red';
+    email.focus();
+    return;
+  } else {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if(!emailPattern.test(email.value.trim())){
+      document.getElementById('email-error').textContent = "Please enter a valid email!";
+      email.style.border = '2px solid red';
+      email.focus();
+      return;
+    }
+  }
+
+  // Phone required check (you can add format check if needed)
+  if(phone.value.trim() === ''){
+    document.getElementById('phone-error').textContent = "Phone number is required!";
+    phone.style.border = '2px solid red';
+    phone.focus();
+    return;
+  }
+
+  // Image required check
+  if(image.files.length === 0){
+    document.getElementById('image-error').textContent = "Please upload an image!";
+    image.style.border = '2px solid red';
+    image.focus();
+    return;
+  }
+
+  // Post required check
+  if(post.value.trim() === ''){
+    document.getElementById('post-error').textContent = "Post is required!";
+    post.style.border = '2px solid red';
+    post.focus();
+    return;
+  }
+
+  // Message required check
+  if(message.value.trim() === ''){
+    document.getElementById('message-error').textContent = "Message is required!";
+    message.style.border = '2px solid red';
+    message.focus();
+    return;
+  }
+    this.submit();
+
+});
+
+</script>
+
+{% endblock %}

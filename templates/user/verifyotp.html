@@ -1,0 +1,282 @@
+{% extends 'user/userlayout.html' %}
+{% block content %}
+
+<section class="hero-wrap position-relative" style="background-image: url(../../static/user/images/destination-4.jpg); background-size: cover; background-position: center; height: 75vh; padding-bottom: 80px;">
+  <!-- Overlay with semi-transparent black -->
+  <div class="position-absolute top-0 start-0 w-100 h-100" style="background-color: rgba(0, 0, 0, 0.5);"></div>
+
+  <div class="container" style="height: 100%;">
+    <div class="row no-gutters slider-text align-items-end justify-content-center" style="height: 100%;">
+      <div class="col-md-9 ftco-animate pb-5 text-center" style="position: relative; z-index: 2;">
+        <p class="breadcrumbs text-white">
+          <span class="mr-2">
+            <a href="{{url_for('userdashboard')}}" class="text-white">Home <i class="fa fa-chevron-right"></i></a>
+          </span> 
+          <span>Login<i class="fa fa-chevron-right"></i></span>
+        </p>
+        <h1 class="mb-0 bread text-white">Recover Your Account</h1>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OTP Verification Section -->
+<section class="form-section">
+  <div class="container">
+    <div class="row justify-content-center mb-4">
+      <div class="col-md-8 text-center">
+        <h2 class="form-heading">OTP Verification</h2>
+        <p class="subheading">Enter the OTP sent to your registered email</p>
+      </div>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <form action="{{ url_for('verifyotp') }}" method="POST" class="form-container mx-auto">
+
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
+
+          <!-- OTP Input -->
+          <div class="form-group">
+            <label for="otp">Enter OTP</label>
+            <input type="text" id="otp" name="otp" class="form-control">
+            <div class="error-message" id="otp-error"></div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="btn-wrapper mt-4">
+            <button type="submit" class="btn-submit">Verify OTP</button>
+          </div>
+
+          <!-- Back to login -->
+          <p class="text-center mt-3" style="font-size: 18px; text-align: center; margin-top: 20px;">
+            <a href="{{ url_for('login') }}" style="color: #0ea5e9; text-decoration: underline;">← Back to Login</a>
+          </p>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Embedded CSS -->
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: white;
+  }
+
+  .form-section {
+    padding: 60px 20px;
+    background: linear-gradient(to bottom right,rgb(249, 250, 251),rgb(238, 241, 243));
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: auto;
+  }
+
+  .form-heading {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #0c4a6e;
+    margin-bottom: 10px;
+  }
+
+  .subheading {
+    font-size: 1rem;
+    color: #475569;
+    margin-bottom: 30px;
+  }
+
+  .form-container {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 8px;
+    display: block;
+    font-size: 16px;
+  }
+  .alert-success { 
+  background-color: #d1fae5; 
+  color: #065f46; 
+  padding: 12px 24px; 
+  border-radius: 8px; 
+  margin-top: 15px; 
+  font-size: 16px; 
+  font-weight: 500; 
+}
+.alert-warning {
+  background-color: #fef3c7; 
+  color: #78350f;
+  padding: 12px 24px; 
+  border-radius: 8px; 
+  margin-top: 15px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+
+  .form-control {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    transition: 0.3s ease;
+    background-color: #f9fafb;
+  }
+
+  .error-message{
+    font-size: 16px;
+    margin-top: 5px;
+    color: red;
+    background-color: transparent;
+  }
+
+  .form-control:focus {
+    outline: none;
+    border-color: #38bdf8;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+  }
+
+  .btn-submit {
+    background-color: #0ea5e9;
+    color: #fff;
+    padding: 12px 30px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn-submit:hover {
+    background-color: #0284c7;
+  }
+
+  .form-links {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+    font-size: 0.95rem;
+  }
+
+  .form-links a {
+    color: #0ea5e9;
+    text-decoration: underline;
+    font-size: 18px;
+  }
+
+  .form-links a:hover {
+    text-decoration: underline;
+  }
+
+  .btn-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+  }
+
+  .alert {
+  background-color: transparent !important;
+  padding: 12px 24px;
+  margin-top: 15px;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: 500;
+  box-shadow: none;
+  border: none;
+}
+
+
+  .alert-success {
+    color: rgb(9, 148, 55);
+  }
+
+  .alert-danger {
+    color: rgb(247, 64, 64);
+  }
+
+  .alert-warning {
+    color: rgb(243, 157, 51);
+  }
+
+  .alert-info {
+    color: rgb(24, 55, 142);
+  }
+
+  .flash-container {
+    width: 100%;
+    text-align: center;
+  }
+
+  @media (max-width: 576px) {
+    .form-container {
+      padding: 25px;
+    }
+
+    .form-links {
+      flex-direction: column;
+      gap: 10px;
+      text-align: center;
+    }
+  }
+</style>
+
+<script>
+  document.querySelector('form').addEventListener('submit', function(e){
+
+    const otp = document.getElementById('otp');
+    document.getElementById('otp-error').textContent = '';
+    otp.style.border = '';
+    let firstInvalidField = null;
+
+    if(otp.value.trim() === '')
+    {
+      document.getElementById('otp-error').textContent = 'OTP is required!';
+      otp.style.border = '2px solid red';
+      firstInvalidField = otp;   
+    }
+
+    if(firstInvalidField){
+      e.preventDefault();
+      firstInvalidField.focus();
+      firstInvalidField.scrollIntoView({ behavior : "smooth", block :"center"});
+    }
+  });
+</script>
+
+<script>
+  // Auto-hide flash messages after 3 seconds
+  setTimeout(function() {
+    let alerts = document.querySelectorAll('.alert');
+    alerts.forEach(function(alert) {
+      alert.style.transition = "opacity 0.5s ease";
+      alert.style.opacity = "0"; // fade out
+      setTimeout(() => alert.remove(), 500); // remove from DOM after fade
+    });
+  }, 4000); 
+</script>
+
+{% endblock %}

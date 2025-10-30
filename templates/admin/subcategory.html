@@ -1,0 +1,155 @@
+{% extends "admin/adminlayout.html" %}
+{% block content %}
+
+<!-- start: content -->
+<div id="content">
+    <div class="panel box-shadow-none content-header">
+        <div class="panel-body">
+            <div class="col-md-12">
+                <h3 class="animated fadeInLeft">Subcategory Master</h3>    
+            </div>
+        </div>
+    </div>
+  
+    <div class="form-element">
+        <div class="col-md-12 padding-0">   
+            <div class="col-md-12">
+                <div class="col-md-12 panel">
+                    <div class="col-md-12 panel-heading">
+                        <h4>Add New Subcategory</h4>
+                    </div>
+                    <div class="col-md-12 panel-body" style="padding-bottom:30px;">
+                        <div class="col-md-12">
+                            <form class="cmxform" id="subcategoryForm" method="post" action="{{ url_for('addsubcategory') }}" enctype="multipart/form-data">
+                                
+                                <!-- Select Category -->
+                                <div class="form-group">
+                                    <label>Select Category</label>
+                                    <div class="col-12 padding-0">
+                                        <select class="form-control" name="cateid" id="category"> 
+                                            <option value="">-- Select Category --</option>
+                                            {% for i in cate %}         
+                                                <option value="{{ i[0] }}">{{ i[1] }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>                      
+                                </div>    
+
+                                <!-- Subcategory Type -->
+                                <div class="form-group" style="margin-top:20px;">
+                                    <label>Subcategory Type</label>
+                                    <select class="form-control" name="is_international" id="type">
+                                        <option value="">-- Select Type --</option>
+                                        <option value="0">Domestic</option>
+                                        <option value="1">International</option>
+                                    </select>
+                                </div>
+
+                                <!-- Subcategory Name -->
+                                <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                                    <input type="text" class="form-text" id="subcategory_name" name="sname">
+                                    <span class="bar"></span>
+                                    <label>Subcategory Name</label>
+                                    <div class="error-message" id="name-error" style="color:red; font-size:16px; margin-top:5px;"></div>
+                                </div>
+
+                                <!-- Subcategory Image -->
+                                <label>Subcategory Image</label>
+                                <div class="form-group form-animate-text">
+                                    <input type="file" class="form-text" id="subcategory_image" name="image">
+                                    <span class="bar"></span>
+                                    <div class="error-message" id="image-error" style="color:red; font-size:16px; margin-top:5px;"></div>
+                                </div>
+
+                                <!-- Subcategory Location -->
+                                <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                                    <input type="text" class="form-text" id="subcategory_location" name="slocation">
+                                    <span class="bar"></span>
+                                    <label>Subcategory Location</label>
+                                    <div class="error-message" id="location-error" style="color:red; font-size:16px; margin-top:5px;"></div>
+                                </div>                                       
+                                
+                                <!-- Submit -->
+                                <div class="col-md-12">  
+                                    <input class="submit btn btn-info" type="submit" value="Submit">
+                                </div>
+                            
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end: content -->
+
+<!-- Validation Script -->
+<script>
+    document.getElementById('subcategoryForm').addEventListener('submit', async function(e){
+        e.preventDefault();
+
+        const category = document.getElementById('category');
+        const type = document.getElementById('type');
+        const name = document.getElementById('subcategory_name');
+        const image = document.getElementById('subcategory_image');
+        const location = document.getElementById('subcategory_location');
+
+        document.getElementById('name-error').textContent = '';
+        document.getElementById('image-error').textContent = '';
+        document.getElementById('location-error').textContent = '';
+
+        // Category validation
+        if (category.value === '') {
+            alert('Please select a category');
+            category.focus();
+            return;
+        }
+
+        // Type validation
+        if (type.value === '') {
+            alert('Please select a type');
+            type.focus();
+            return;
+        }
+
+        // Name validation
+        if (name.value.trim() === '') {
+            document.getElementById('name-error').textContent = 'Subcategory name is required!';
+            name.focus();
+            return;
+        } else {
+            const namePattern = /^[A-Za-z\s]+$/;
+            if (!namePattern.test(name.value.trim())) {
+                document.getElementById('name-error').textContent = 'Subcategory name can contain only letters and spaces.';
+                name.focus();
+                return;
+            }
+        }
+
+        // Image validation
+        if (image.value.trim() === '') {
+            document.getElementById('image-error').textContent = 'Image is required!';
+            image.focus();
+            return;
+        } else {
+            const imagePattern = /(\.jpg|\.jpeg|\.png)$/i;
+            if (!imagePattern.test(image.value.trim())) {
+                document.getElementById('image-error').textContent = 'Please upload file having extensions .jpeg/.jpg/.png only.';
+                image.focus();
+                return;
+            }
+        }
+
+        // Location validation
+        if (location.value.trim() === '') {
+            document.getElementById('location-error').textContent = 'Location is required!';
+            location.focus();
+            return;
+        }
+       
+        this.submit();
+    });
+</script>
+
+{% endblock %}

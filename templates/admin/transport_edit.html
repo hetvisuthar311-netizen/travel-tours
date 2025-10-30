@@ -1,0 +1,220 @@
+{% extends "admin/adminlayout.html" %}
+{% block content %}
+
+<div id="content">
+  <div class="panel box-shadow-none content-header">
+    <div class="panel-body">
+      <div class="col-md-12">
+        <h3 class="animated fadeInLeft">Transport Master</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-element">
+    <div class="col-md-12 padding-0">
+      <div class="col-md-12">
+        <div class="col-md-12 panel">
+
+          <!-- Panel Heading -->
+          <div class="col-md-12 panel-heading">
+            <h4>Update Transport</h4>
+          </div>
+
+          <!-- Panel Body -->
+          <div class="col-md-12 panel-body" style="padding-bottom:30px;">
+
+            <!-- Update Transport Form -->
+            <form method="post" id="transportForm" action="{{ url_for('updatetransport',travel_id=data[0]) }}">
+              <input type="hidden" name="travel_id" value="{{ data[0] }}">
+
+              <!-- Package Dropdown -->
+              <div class="form-group" style="margin-bottom: 30px;">
+                <label>Select Package</label>
+                <select class="form-control" name="package_id" id="package">
+                  <option value="">-- Select Package --</option>
+                  {% for package in packages %}
+                    <option value="{{ package[0] }}" {% if data[1] == package[0] %}selected{% endif %}>
+                      {{ package[1] }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <!-- Mode Dropdown -->
+              <div class="form-group" style="margin-bottom: 30px;">
+                <label>Select Mode</label>
+                <select class="form-control" name="mode" id="mode">
+                  <option value="">-- Select Mode --</option>
+                  <option value="Bus" {% if data[2]=='Bus' %}selected{% endif %}>Bus</option>
+                  <option value="Train" {% if data[2]=='Train' %}selected{% endif %}>Train</option>
+                  <option value="Flight" {% if data[2]=='Flight' %}selected{% endif %}>Flight</option>
+                  <option value="Car" {% if data[2]=='Car' %}selected{% endif %}>Car</option>
+                </select>
+              </div>
+
+              <!-- From Location -->
+              <div class="form-group form-animate-text" style="margin-top: 40px;">
+                <input type="text" class="form-text" id="from_location" name="from_location" value="{{ data[3] }}">
+                <span class="bar"></span>
+                <label>From Location</label>
+                <div class="error-message" id="loc-error" style="color: red; font-size: 16px; margin-top: 5px;"></div>
+              </div>
+
+              <!-- To Location -->
+              <div class="form-group form-animate-text" style="margin-top: 40px;">
+                <input type="text" class="form-text" id="to_location" name="to_location" value="{{ data[4] }}">
+                <span class="bar"></span>
+                <label>To Location</label>
+                <div class="error-message" id="loca-error" style="color: red; font-size: 16px; margin-top: 5px;"></div>
+              </div>
+
+              <!-- Departure Time -->
+              <div class="form-group form-animate-text" style="margin-top: 40px;">
+                <input type="time" class="form-text" id="departure_time" name="departure_time" value="{{ data[5] }}">
+                <span class="bar"></span>
+                <label>Departure Time</label>
+                <div class="error-message" id="departure-error" style="color: red; font-size: 16px; margin-top: 5px;"></div>
+              </div>
+
+              <!-- Arrival Time -->
+              <div class="form-group form-animate-text" style="margin-top: 40px;">
+                <input type="time" class="form-text" id="arrival_time" name="arrival_time" value="{{ data[6] }}">
+                <span class="bar"></span>
+                <label>Arrival Time</label>
+                <div class="error-message" id="arrival-error" style="color: red; font-size: 16px; margin-top: 5px;"></div>
+              </div>
+
+              <!-- Travel Date -->
+              <div class="form-group form-animate-text" style="margin-top: 40px;">
+                <input type="date" class="form-text" id="travel_date" name="travel_date" value="{{ data[7] }}">
+                <span class="bar"></span>
+                <label>Travel Date</label>
+                <div class="error-message" id="date-error" style="color: red; font-size: 16px; margin-top: 5px;"></div>
+              </div>
+
+              <!-- Submit Button -->
+              <div class="col-md-12" style="margin-top: 30px;">
+                <input class="submit btn btn-info" type="submit" value="Update Transport">
+              </div>
+
+            </form>
+          </div>
+          <!-- End Panel Body -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Validation Script -->
+<script>
+  document.getElementById('transportForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+
+    const package = document.getElementById('package');
+    const mode = document.getElementById('mode');
+    const from_location = document.getElementById('from_location');
+    const to_location = document.getElementById('to_location');
+    const departure_time = document.getElementById('departure_time');
+    const arrival_time = document.getElementById('arrival_time');
+    const travel_date = document.getElementById('travel_date');
+
+    // Reset errors
+    document.getElementById('loc-error').textContent = '';
+    document.getElementById('loca-error').textContent = '';
+    document.getElementById('departure-error').textContent = '';
+    document.getElementById('arrival-error').textContent = '';
+    document.getElementById('date-error').textContent = '';
+
+    // Package validation
+    if(package.value === ''){
+      alert('Please select a package!');
+      package.focus();
+      return;
+    }
+
+    // Mode validation
+    if(mode.value === ''){
+      alert('Please select mode!');
+      mode.focus();
+      return;
+    }
+
+    // From location validation
+    if(from_location.value.trim() === ''){
+      document.getElementById('loc-error').textContent = 'From location is required';
+      from_location.focus();
+      return;
+    } else {
+      const locationPattern = /^[A-Za-z\s,.-]+$/;
+      if(!locationPattern.test(from_location.value.trim())){
+        document.getElementById('loc-error').textContent = 'From location can contain only letters, spaces, commas, dots or hyphens';
+        from_location.focus();
+        return;
+      }
+    }
+
+    // To location validation
+    if(to_location.value.trim() === ''){
+      document.getElementById('loca-error').textContent = 'To location is required!';
+      to_location.focus();
+      return;
+    } else {
+      const locationPattern = /^[A-Za-z\s,.-]+$/;
+      if(!locationPattern.test(to_location.value.trim())){
+        document.getElementById('loca-error').textContent = 'To location can contain only letters, spaces, commas, dots or hyphens';
+        to_location.focus();
+        return;
+      }
+    }
+
+    // Departure validation
+    if(departure_time.value.trim() === ''){
+      document.getElementById('departure-error').textContent = 'Departure time is required!';
+      departure_time.focus();
+      return;
+    }
+
+    // Arrival validation
+    if(arrival_time.value.trim() === ''){
+      document.getElementById('arrival-error').textContent = 'Arrival time is required!';
+      arrival_time.focus();
+      return;
+    }
+
+    // Compare times
+    if(departure_time.value && arrival_time.value){
+      const dep = departure_time.value.split(':');
+      const arr = arrival_time.value.split(':');
+      const depMinutes = parseInt(dep[0]) * 60 + parseInt(dep[1]);
+      const arrMinutes = parseInt(arr[0]) * 60 + parseInt(arr[1]);
+
+      if(arrMinutes <= depMinutes){
+        document.getElementById('arrival-error').textContent = 'Arrival time must be after departure time!';
+        arrival_time.focus();
+        return;
+      }
+    }
+
+    // Travel date validation
+    if(travel_date.value.trim() === ''){
+      document.getElementById('date-error').textContent = 'Travel date is required!';
+      travel_date.focus();
+      return;
+    } else {
+      const today = new Date();
+      const travel = new Date(travel_date.value);
+      today.setHours(0,0,0,0);
+      if(travel < today){
+        document.getElementById('date-error').textContent = 'Travel date cannot be in the past!';
+        travel_date.focus();
+        return;
+      }
+    }
+
+    this.submit();
+  });
+</script>
+
+{% endblock %}

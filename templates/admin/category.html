@@ -1,0 +1,115 @@
+{% extends "admin/adminlayout.html" %}
+{% block content %}
+
+<!-- start: content -->
+<div id="content">
+
+  <!-- Page Header -->
+  <div class="panel box-shadow-none content-header">
+    <div class="panel-body">
+      <div class="col-md-12">
+        <h3 class="animated fadeInLeft">Category Master</h3>  
+      </div>
+    </div>
+  </div>
+  <!-- End Page Header -->
+
+  <!-- Add Category Section -->
+  <div class="form-element">
+    <div class="col-md-12 padding-0">      
+      <div class="col-md-12">
+        <div class="col-md-12 panel">
+
+          <!-- Panel Heading -->
+          <div class="col-md-12 panel-heading">
+            <h4>Add New Category</h4>
+          </div>
+
+          <!-- Panel Body -->
+          <div class="col-md-12 panel-body" style="padding-bottom:30px;">
+            <div class="col-md-12">
+
+              <!-- Add Category Form -->
+              <form class="cmxform" id="categoryForm" method="post" enctype="multipart/form-data" action="{{ url_for('addcategory') }}">
+                
+                <!-- Category Name -->
+                <div class="form-group form-animate-text" style="margin-top:40px !important;">
+                  <input type="text" class="form-text" id="category_name" name="cname">
+                  <span class="bar"></span>
+                  <label>Category Name</label>
+                  <div class="error-message" id="name-error" style="color: red; font-size: 16px; margin-top: 5px;"></div>
+                </div>
+
+                <!-- Category Image -->
+                <label>Category-Image</label>
+                <div class="form-group form-animate-text">      
+                  <input type="file" class="form-text" id="category_image" name="image">
+                  <span class="bar"></span>
+                  <div class="error-message" id="image-error" style="color: red; font-size: 16px; margin-top: 5px;"></div>
+                </div>    
+
+                <!-- Submit Button -->
+                <div class="col-md-12">            
+                  <input class="submit btn btn-info" type="submit" value="submit">
+                </div>
+
+              </form>
+              <!-- End Add Category Form -->
+
+            </div>
+          </div>
+          <!-- End Panel Body -->
+
+        </div>
+      </div>    
+    </div>
+  </div>
+  <!-- End Add Category Section -->
+
+</div>
+<!-- end: content -->
+
+<!-- Form Validation Script -->
+<script>
+document.getElementById('categoryForm').addEventListener("submit", async function(e){
+  e.preventDefault();
+
+  const name = document.getElementById('category_name');
+  const image = document.getElementById('category_image');
+
+  document.getElementById('name-error').textContent = '';
+  document.getElementById('image-error').textContent = '';
+
+  // Validate Category Name
+  if (name.value.trim() === '') {
+    document.getElementById('name-error').textContent = 'Category name is required';
+    name.focus();
+    return;
+  } else {
+    const namePattern = /^[A-Za-z\s]+$/;
+    if (!namePattern.test(name.value.trim())) {
+      document.getElementById('name-error').textContent = 'Category name can contain only letters and spaces';
+      name.focus();
+      return;
+    }
+  }
+
+  // Validate Category Image
+  if (image.value.trim() === '') {
+    document.getElementById('image-error').textContent = 'Image is required!';
+    image.focus();
+    return;
+  } else {
+    const imagePattern = /(\.jpg|\.jpeg|\.png)$/i;
+    if (!imagePattern.test(image.value.trim())) {
+      document.getElementById('image-error').textContent = 'Please upload file having extensions .jpeg/.jpg/.png only.';
+      image.focus();
+      return;
+    }
+  }
+  
+  this.submit();
+});
+</script>
+
+{% endblock %}
